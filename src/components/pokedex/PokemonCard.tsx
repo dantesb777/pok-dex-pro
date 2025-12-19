@@ -1,4 +1,5 @@
 import { Pokemon } from "@/types/pokemon";
+import { usePokedexSounds } from "@/hooks/usePokedexSounds";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -28,9 +29,10 @@ const typeColors: Record<string, string> = {
 
 export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
   const mainType = pokemon.types[0]?.type.name || "normal";
+  const { playHover } = usePokedexSounds();
   
   return (
-    <div className="perspective-1000">
+    <div className="perspective-1000" onMouseEnter={playHover}>
       <button
         onClick={onClick}
         className="group relative bg-card rounded-xl p-3 md:p-4 border-2 border-border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent card-3d preserve-3d"
