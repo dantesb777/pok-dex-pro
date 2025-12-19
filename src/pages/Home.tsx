@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { usePokedexSounds } from "@/hooks/usePokedexSounds";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { playOpen } = usePokedexSounds();
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden">
@@ -14,7 +16,10 @@ export default function Home() {
       {/* Pokédex Device */}
       <div className="relative perspective-1000">
         <button
-          onClick={() => navigate("/pokedex")}
+          onClick={() => {
+            playOpen();
+            navigate("/pokedex");
+          }}
           className="group relative transform-gpu transition-all duration-500 hover:scale-105 focus:outline-none"
         >
           {/* Main Pokédex Body */}

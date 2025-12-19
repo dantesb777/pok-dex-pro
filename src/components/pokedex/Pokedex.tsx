@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Pokemon, GENERATIONS, Generation } from "@/types/pokemon";
 import { usePokemonList, usePokemonSearch } from "@/hooks/usePokemon";
+import { usePokedexSounds } from "@/hooks/usePokedexSounds";
 import { PokedexHeader } from "./PokedexHeader";
 import { GenerationTabs } from "./GenerationTabs";
 import { PokemonGrid } from "./PokemonGrid";
@@ -10,6 +11,7 @@ export function Pokedex() {
   const [selectedGen, setSelectedGen] = useState<Generation>(GENERATIONS[0]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const { playClick, playSelect, playOpen, playClose, playSearch } = usePokedexSounds();
 
   const { pokemon: genPokemon, loading: genLoading, error: genError } = usePokemonList(selectedGen);
   const { pokemon: searchedPokemon, loading: searchLoading, error: searchError } = usePokemonSearch(searchQuery);
@@ -38,12 +40,16 @@ export function Pokedex() {
         <div className="bg-primary rounded-3xl shadow-2xl overflow-hidden pokedex-border">
           <PokedexHeader 
             searchQuery={searchQuery} 
-            onSearchChange={setSearchQuery} 
+            onSearchChange={(query) => {
+              setSearchQuery(query);
+              if (query) playSearch();
+            }} 
           />
           
           <GenerationTabs 
             selectedGen={selectedGen} 
             onSelectGen={(gen) => {
+              playClick();
               setSelectedGen(gen);
               setSearchQuery("");
             }} 
@@ -63,7 +69,10 @@ export function Pokedex() {
               pokemon={displayedPokemon}
               loading={isLoading}
               error={error}
-              onSelectPokemon={setSelectedPokemon}
+              onSelectPokemon={(p) => {
+                playOpen();
+                setSelectedPokemon(p);
+              }}
             />
           </div>
 
@@ -80,7 +89,10 @@ export function Pokedex() {
         {/* Pokemon Detail Modal */}
         <PokemonDetail
           pokemon={selectedPokemon}
-          onClose={() => setSelectedPokemon(null)}
+          onClose={() => {
+            playClose();
+            setSelectedPokemon(null);
+          }}
         />
       </div>
     </div>
